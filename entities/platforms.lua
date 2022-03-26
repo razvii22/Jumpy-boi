@@ -4,6 +4,7 @@ platforms.instances = {}
 
 function platforms:create(x,y,w,h,b)
   local platform = {}
+  platform.state = "solid"
   platform.b = b
   platform.x = x or 100
   platform.y = y or 300
@@ -13,21 +14,26 @@ function platforms:create(x,y,w,h,b)
   platform.collider:setType("static")
   platform.collider:setCollisionClass("Platform")
 
+  function platform:update()
+    if platform.state == "solid" then
+      platform.collider:setCollisionClass("Platform")
+      if platform.collider:enter("Player") then
+        player.collider:applyLinearImpulse(0,-platform.b)
+      end
 
-
-  function platform:bounce()
-    if platform.collider:enter("Player") then
-      player.collider:applyLinearImpulse(0, -platform.b)
-    end
-  end
-
-  function platform:oneway()
-    if player.collider:getY()+25 > platform.collider:getY()  then
+    elseif platform.state == "ghost" then
       platform.collider:setCollisionClass("Ghost")
-    else platform.collider:setCollisionClass("Platform")
     end
 
+    if player.collider:getY()+25 > platform.collider:getY() then
+        platform.state = "ghost"
+    else
+        platform.state = "solid"
+    end
   end
+
+
+
   table.insert(platforms.instances,platform)
 
 
@@ -38,8 +44,7 @@ function platforms:update(dt)
 
 
   for i,v in pairs(platforms.instances) do
-    v:bounce()
-    v:oneway()
+    v:update()
   end
 
 
