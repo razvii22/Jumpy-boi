@@ -11,8 +11,9 @@ function love.load()
   world:setGravity(0, 1000)
   world:setQueryDebugDrawing(true)
   player:load()
-  platforms:create(-1000,600,100000,1,3500)
-  platforms:create(100,300,300,1,2000)
+  platforms:create(-1000,600,100000,1,5000)
+  uwu = platforms:create(100,300,300,1,2000)
+  uwu.state = "destroyed"
 end
 
 function love.update(dt)

@@ -33,7 +33,6 @@ function platforms:create(x,y,w,h,b)
   end
 
 
-
   table.insert(platforms.instances,platform)
 
 
@@ -44,7 +43,12 @@ function platforms:update(dt)
 
 
   for i,v in pairs(platforms.instances) do
-    v:update()
+    if v.state == "destroyed" then
+      table.remove(platforms.instances,i)
+      v.collider:destroy()
+    else
+      v:update()
+    end
   end
 
 
